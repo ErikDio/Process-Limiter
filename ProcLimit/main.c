@@ -54,6 +54,9 @@ int main(int argc, char **argv) {
     if(telas <= 0) {
         printf("Erro ao iniciar o programa\n");
         return 0;
+    } if (!DEBUG) {
+        HWND hWnd = GetConsoleWindow();
+        ShowWindow(hWnd, SW_HIDE);
     }
     Processos(DEBUG, telas);
     getchar();

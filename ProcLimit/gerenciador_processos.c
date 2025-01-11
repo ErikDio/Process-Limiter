@@ -54,15 +54,20 @@ void Processos(bool DEBUG, int telas) {
             break;
         }
         bool continuar = false;
+        int disponivel = -1;
+        bool existe = false;
         for(int j = 0; j < telas; j++) {
             if(telas_permitidas[j] == processos_programa[i]) {
+                existe = true;
                 break;
             } else if(telas_permitidas[j] != 0) {
                 continue;
             } else {
-                telas_permitidas[j] = processos_programa[i];
-                break;
+                disponivel = j;
+                continue;
             }
+        } if(existe == false && disponivel != -1) {
+            telas_permitidas[disponivel] = processos_programa[i];
         } if(continuar) {
             continue;
         } else {
@@ -89,21 +94,19 @@ void Processos(bool DEBUG, int telas) {
                 CloseHandle(hProcess);
             }
         }
-    }
-        for (int i = 0; i < telas; i++) {
+    } for (int i = 0; i < telas; i++) {
             if(telas_permitidas[i] != 0) {
-bool existe = false;
-for (int j = 0; j < count; j++) {
-if(telas_permtidas[i] == processo_programas[j]) {
-existe = true;
-break;
-} 
-}
-if(existe) {
-                printf("PID: %d\n", telas_permitidas[i]);
-} else {
-telas_permitidas[i] = 0;
-}
+                bool existe = false;
+                for (int j = 0; j < count; j++) {
+                    if(telas_permitidas[i] == processos_programa[j]) {
+                        existe = true;
+                        break;
+                    } 
+                } if(existe) {
+                    printf("PID %d: %d\n", i, telas_permitidas[i]);
+                } else {
+                    telas_permitidas[i] = 0;
+                }
             }
         }
         CloseHandle(hProcessSnap);
