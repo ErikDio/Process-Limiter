@@ -92,7 +92,18 @@ void Processos(bool DEBUG, int telas) {
     }
         for (int i = 0; i < telas; i++) {
             if(telas_permitidas[i] != 0) {
+bool existe = false;
+for (int j = 0; j < count; j++) {
+if(telas_permtidas[i] == processo_programas[j]) {
+existe = true;
+break;
+} 
+}
+if(existe) {
                 printf("PID: %d\n", telas_permitidas[i]);
+} else {
+telas_permitidas[i] = 0;
+}
             }
         }
         CloseHandle(hProcessSnap);
