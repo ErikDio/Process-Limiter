@@ -3,6 +3,6 @@
 
 #include <stdbool.h>
 
-void Processos(bool debug, int telas);
+void Processos(bool debug, int telas, char processo[]);
 
 #endif // GERENCIADOR_PROCESSOS_H

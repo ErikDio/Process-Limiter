@@ -5,32 +5,37 @@
 #include <stdbool.h>
 #include<windows.h>
 
-void Processos(bool DEBUG, int telas) {
+void Processos(bool DEBUG, int telas, char processo[256]) {
     if (DEBUG) {
         printf("Debug mode is ON\n");
     }
     HANDLE hProcessSnap;
-    char processo[] = "notepad.exe";
     PROCESSENTRY32 pe32;
     int *telas_permitidas = NULL;
     int *processos_programa = NULL;
     int count = 0;
     int capacity = 10;
-    printf("%d", telas);
+    if(DEBUG){
+        printf("%d", telas);
+    }
     telas_permitidas = (int *) calloc (telas, sizeof(int));
     processos_programa = (int *) calloc (capacity, sizeof(int));
     int nloops = 0;
     while (true) {
         hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
         if(hProcessSnap == INVALID_HANDLE_VALUE) {
-            printf("Erro ao criar snapshot dos processos\n");
+            if(DEBUG){
+                printf("Erro ao criar snapshot dos processos\n");
+            }
             free(telas_permitidas);
             free(processos_programa);
             return;
         }
         pe32.dwSize = sizeof(PROCESSENTRY32);
         if(!Process32First(hProcessSnap, &pe32)) {
-            printf("Erro ao obter a primeira entrada do snapshot\n");
+            if(DEBUG){
+                printf("Erro ao obter a primeira entrada do snapshot\n");
+            }
             CloseHandle(hProcessSnap);
             free(telas_permitidas);
             free(processos_programa);
@@ -39,7 +44,9 @@ void Processos(bool DEBUG, int telas) {
             //printf("Nome do processo: %-30sID: %d\n", pe32.szExeFile, pe32.th32ProcessID);
             if(strcmp(pe32.szExeFile, processo) == 0) {
                 processos_programa[count] = pe32.th32ProcessID;
-                printf("Processo prodemge.exe encontrado com ID: %d\n", processos_programa[count]);
+                if(DEBUG){
+                    printf("Processo %s encontrado com ID: %d\n", processo, processos_programa[count]);
+                }
                 count++;
                 if(count == capacity) {
                     capacity += 10;
@@ -84,12 +91,18 @@ void Processos(bool DEBUG, int telas) {
         } else {
             HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, processos_programa[i]);
             if(hProcess == NULL) {
-                printf("Erro ao terminar o processo %d\n", processos_programa[i]);
+                if(DEBUG){
+                    printf("Erro ao terminar o processo %d\n", processos_programa[i]);
+                }
             } else {
                 if(TerminateProcess(hProcess, 0)) {
-                    printf("Processo %d finalizado com sucesso\n", processos_programa[i]);
+                    if(DEBUG){
+                        printf("Processo %d finalizado com sucesso\n", processos_programa[i]);
+                    }
                 } else {
-                    printf("Erro ao finalizar o processo %d\n", processos_programa[i]);
+                    if(DEBUG){
+                        printf("Erro ao finalizar o processo %d\n", processos_programa[i]);
+                    }
                 }
                 CloseHandle(hProcess);
             }
@@ -103,7 +116,9 @@ void Processos(bool DEBUG, int telas) {
                         break;
                     } 
                 } if(existe) {
-                    printf("PID %d: %d\n", i, telas_permitidas[i]);
+                    if(DEBUG){
+                        printf("PID %d: %d\n", i, telas_permitidas[i]);
+                    }
                 } else {
                     telas_permitidas[i] = 0;
                 }
