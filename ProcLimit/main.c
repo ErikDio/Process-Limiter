@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <TlHelp32.h>
 #include <stdbool.h>
+#include <locale.h>
 #include "gerenciador_processos.h"
 bool DEBUG = false;
 
@@ -26,6 +27,7 @@ void loadConfig(int *telas, char* processo) {
 }
 
 int Iniciar(int argc, char **argv) {
+    setlocale(LC_ALL, "Portuguese");
     for(int i = 0; i < argc; i++) {
         if (strcmp(argv[i], "-debug") == 0) {
             DEBUG = true;
@@ -40,8 +42,10 @@ int Iniciar(int argc, char **argv) {
         char processo[256];
         scanf("%s", processo);
         saveConfig(telas, processo);
-        SetFileAttributes("./config.cfg", FILE_ATTRIBUTE_READONLY);
-        SetFileAttributes("./config.cfg", FILE_ATTRIBUTE_HIDDEN);
+        DWORD newAttribs = attribs | FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN;
+        if (!SetFileAttributes("./config.cfg", newAttribs)) {
+            printf("Failed to set read-only attribute. Error: %lu\n", GetLastError());
+        }
         return telas;
     } else {
         return 1;
