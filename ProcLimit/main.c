@@ -27,7 +27,6 @@ void loadConfig(int *telas, char* processo) {
 }
 
 int Iniciar(int argc, char **argv) {
-    setlocale(LC_ALL, "Portuguese");
     for(int i = 0; i < argc; i++) {
         if (strcmp(argv[i], "-debug") == 0) {
             DEBUG = true;
@@ -53,6 +52,8 @@ int Iniciar(int argc, char **argv) {
 }
 
 int main(int argc, char **argv) {
+    SetConsoleOutputCP(CP_UTF8);
+    setlocale(LC_ALL, "pt_PT.UTF-8");
     char processo[256];
     int telas = 0;
     int status = Iniciar(argc, argv);
